@@ -11,14 +11,32 @@ public class Toolkit {
     private static final String FILENAME_STOPWORDS = "stopwords.csv";
 
     public static void loadGLOVE() throws IOException {
-        BufferedReader myReader = null;
-        //TODO Task 5.1
+        try {
+            BufferedReader myReader = null;
+            //TODO Task 5.1
+            String line = "";
+            listVocabulary = new ArrayList<String>();
+            myReader = new BufferedReader(new FileReader("D:\\Work\\2022-12\\Java\\Assignment2\\src\\main\\resources\\" + FILENAME_GLOVE));
+            while ((line = myReader.readLine()) != null) {
+//                System.out.println(line.split(",")[0]);
+                listVocabulary.add(line.split(",")[0]);
+            }
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static List<String> loadStopWords() throws IOException {
         List<String> listStopWords = new ArrayList<>();
         BufferedReader myReader = null;
         //TODO Task 5.2
+        myReader = new BufferedReader(new FileReader("D:\\Work\\2022-12\\Java\\Assignment2\\src\\main\\resources\\" + FILENAME_GLOVE));
+        String line;
+        while ((line = myReader.readLine()) != null) {
+            listStopWords.add(line);
+        }
         return listStopWords;
     }
 

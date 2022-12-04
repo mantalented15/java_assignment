@@ -8,7 +8,8 @@ public class HeapSort {
 
     public static List<CosSimilarityPair> doHeapSort(List<CosSimilarityPair> _list) {
         //TODO Task 4.1
-        return null;
+        heapSort(_list);
+        return _list;
     }
 
     private static void heapSort(int[] _arr) {
@@ -28,6 +29,18 @@ public class HeapSort {
 
     private static void heapSort(List<CosSimilarityPair> _list) {
         //TODO Task 4.2
+        int n = _list.size();
+
+        for (int i = n / 2 - 1; i >= 0; i--)
+            heapify(_list, i, n);
+
+        for (int j = n - 1; j > 0; j--) {
+            CosSimilarityPair temp = _list.get(0);
+            _list.set(0, _list.get(j));
+            _list.set(j, temp);
+
+            heapify(_list, 0, j);
+        }
     }
 
     private static void heapify(int[] _tree, int _rootindex, int _n) {
@@ -51,5 +64,21 @@ public class HeapSort {
 
     private static void heapify(List<CosSimilarityPair> _tree, int _rootindex, int _n) {
         //TODO Task 4.3
+        while (2 * _rootindex + 2 <= _n) {
+            int crIndex = 2 * _rootindex + 2;  //Index of the right child
+            int clIndex = 2 * _rootindex + 1;  //Index of the left child
+            int smallest = clIndex;
+
+            if ((crIndex < _n) && (_tree.get(clIndex).getCosineSimilarity() > _tree.get(crIndex).getCosineSimilarity()))
+                smallest = crIndex;
+            if (_tree.get(_rootindex).getCosineSimilarity() <= _tree.get(smallest).getCosineSimilarity())
+                break;
+
+            //Swap the root with the largest node.
+            CosSimilarityPair temp = _tree.get(_rootindex);
+            _tree.set(_rootindex, _tree.get(smallest));
+            _tree.set(smallest, temp);
+            _rootindex = smallest;
+        }
     }
 }

@@ -45,7 +45,8 @@ class SemanticMainTest {
         mySW.start();
         listWN = mySM.WordsNearest("university");
         mySW.stop();
-        assertEquals(true, mySW.getTime() < 1000);
+        System.out.println(mySW.getTime());
+        assertEquals(true, mySW.getTime() < 100);
         assertEquals("college,0.87446\nharvard,0.87106\nyale,0.85668\ngraduate,0.85529\ninstitute,0.84836\nprofessor,0.84170\nschool,0.82615\nfaculty,0.82578\nacademy,0.81037\nprinceton,0.81034", GetString(listWN));
         mySW.reset();
 
@@ -136,7 +137,7 @@ class SemanticMainTest {
         mySW.start();
         listLA = mySM.LogicalAnalogies("mother", "father", "son", 1);
         mySW.stop();
-        assertEquals(true, mySW.getTime() < 1000);
+        assertEquals(true, mySW.getTime() < 100);
         assertEquals("daughter,0.96325", GetString(listLA));
         mySW.reset();
 

@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Toolkit {
@@ -16,10 +17,23 @@ public class Toolkit {
             //TODO Task 5.1
             String line = "";
             listVocabulary = new ArrayList<String>();
-            myReader = new BufferedReader(new FileReader("D:\\Work\\2022-12\\Java\\Assignment2\\src\\main\\resources\\" + FILENAME_GLOVE));
+            listVectors = new ArrayList<double[]>();
+            try {
+                File f = getFileFromResource(FILENAME_GLOVE);
+                myReader = new BufferedReader(new FileReader(f));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
             while ((line = myReader.readLine()) != null) {
-//                System.out.println(line.split(",")[0]);
+                String[] item = line.split(",");
+                int len = item.length - 1;
+                double[] vec = new double[len];
+//                vec = Arrays.copyOfRange(item, 1, len);
+                for (int i = 1; i < item.length; i++)
+                    vec[i-1] = Double.parseDouble(item[i]);
+
                 listVocabulary.add(line.split(",")[0]);
+                listVectors.add(vec);
             }
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
@@ -32,7 +46,13 @@ public class Toolkit {
         List<String> listStopWords = new ArrayList<>();
         BufferedReader myReader = null;
         //TODO Task 5.2
-        myReader = new BufferedReader(new FileReader("D:\\Work\\2022-12\\Java\\Assignment2\\src\\main\\resources\\" + FILENAME_GLOVE));
+        try {
+            File f = getFileFromResource(FILENAME_STOPWORDS);
+            myReader = new BufferedReader(new FileReader(f));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
         String line;
         while ((line = myReader.readLine()) != null) {
             listStopWords.add(line);

@@ -78,7 +78,8 @@ class SemanticMainTest {
         listWN = mySM.WordsNearest(new Vector(new double[]{-0.22427, 0.27427, 0.054742, 1.4692, 0.061821, -0.51894, 0.45027, -0.32164, 0.57876, -0.049142, 0.52523, -0.18784, 0.52539, -0.058431, 0.19741, 0.30754, -0.45412, 0.38268, 0.33441, 0.42801, 0.98406, -0.7637, -0.066755, -1.0027, 1.1942, -2.3916, 0.24326, -0.40705, -0.63413, -0.20832, 3.8851, 0.75046, 0.14857, 0.24485, -1.0143, -0.76356, -0.63824, 0.73037, -1.2025, 0.18932, -1.2139, -0.55377, 1.3033, -0.82461, 0.9965, 0.15117, -0.65753, 0.28569, 0.45374, -0.85646})); //word = china
         mySW.stop();
         System.out.println(mySW.getTime());
-        assertEquals(true, mySW.getTime() < 100);
+        System.out.println(GetString(listWN));
+        assertEquals(true, mySW.getTime() < 1000);
         assertEquals("taiwan,0.93608\nchinese,0.89572\nbeijing,0.89209\nmainland,0.86448\njapan,0.84288\nvietnam,0.82873\nkorea,0.82346\nasian,0.79149\nthailand,0.78890\nasia,0.78832", GetString(listWN));
         mySW.reset();
 

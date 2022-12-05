@@ -40,16 +40,18 @@ public class Vector {
     public Vector reSize(int _size) {
         //TODO Task 1.6
         int vec_size = doubElements.length;
+        double[] resized_double_elements = doubElements;
+
         if ((_size == vec_size) || (_size <= 0))   return this;
         if (_size < vec_size){
-            doubElements = Arrays.copyOfRange(doubElements, 0, _size);
+            resized_double_elements = Arrays.copyOfRange(doubElements, 0, _size);
         }
         else {
-            doubElements = Arrays.copyOf(doubElements, _size);
+            resized_double_elements = Arrays.copyOf(doubElements, _size);
             for (int i = vec_size; i < _size; i++)
-                doubElements[i] = -1;
+                resized_double_elements[i] = -1;
         }
-        return this;
+        return new Vector(resized_double_elements);
     }
 
     public Vector add(Vector _v) {
@@ -57,19 +59,12 @@ public class Vector {
         int vec1_size = getVectorSize();
         int vec2_size = _v.getVectorSize();
         int vec_size = vec1_size;
-        if (vec2_size > vec1_size){
-            vec_size = vec2_size;
-            reSize(vec_size);
-        }
-        else if (vec1_size > vec2_size){
-            vec_size = vec1_size;
-            _v.reSize(vec_size);
-        }
+        if (vec2_size > vec1_size)  vec_size = vec2_size;
 
         double[] empty_elements = new double[vec_size];
         Vector sum_vector = new Vector(empty_elements);
         for (int i = 0; i < vec_size; i++)
-            sum_vector.setElementatIndex(getElementatIndex(i) + _v.getElementatIndex(i), i);
+            sum_vector.setElementatIndex(reSize(vec_size).getElementatIndex(i) + _v.reSize(vec_size).getElementatIndex(i), i);
 
         return  sum_vector;
     }
@@ -79,19 +74,12 @@ public class Vector {
         int vec1_size = getVectorSize();
         int vec2_size = _v.getVectorSize();
         int vec_size = vec1_size;
-        if (vec2_size > vec1_size){
-            vec_size = vec2_size;
-            reSize(vec_size);
-        }
-        else if (vec1_size > vec2_size){
-            vec_size = vec1_size;
-            _v.reSize(vec_size);
-        }
+        if (vec2_size > vec1_size)  vec_size = vec2_size;
 
         double[] empty_elements = new double[vec_size];
         Vector subtraction_vector = new Vector(empty_elements);
         for (int i = 0; i < vec_size; i++)
-            subtraction_vector.setElementatIndex(getElementatIndex(i) - _v.getElementatIndex(i), i);
+            subtraction_vector.setElementatIndex(reSize(vec_size).getElementatIndex(i) - _v.reSize(vec_size).getElementatIndex(i), i);
 
         return  subtraction_vector;
     }
@@ -101,37 +89,24 @@ public class Vector {
         int vec1_size = getVectorSize();
         int vec2_size = _v.getVectorSize();
         int vec_size = vec1_size;
-        if (vec2_size > vec1_size){
-            vec_size = vec2_size;
-            reSize(vec_size);
-        }
-        else if (vec1_size > vec2_size){
-            vec_size = vec1_size;
-            _v.reSize(vec_size);
-        }
+        if (vec2_size > vec1_size)  vec_size = vec2_size;
 
         double dot_product = 0;
         for (int i = 0; i < vec_size; i++)
-            dot_product += getElementatIndex(i)*_v.getElementatIndex(i);
+            dot_product += reSize(vec_size).getElementatIndex(i)*_v.reSize(vec_size).getElementatIndex(i);
 
         return  dot_product;
     }
 
     public double cosineSimilarity(Vector _v) {
         //TODO Task 1.10
+        double cosine_similarity = 0;
         int vec1_size = getVectorSize();
         int vec2_size = _v.getVectorSize();
         int vec_size = vec1_size;
-        if (vec2_size > vec1_size){
-            vec_size = vec2_size;
-            reSize(vec_size);
-        }
-        else if (vec1_size > vec2_size){
-            vec_size = vec1_size;
-            _v.reSize(vec_size);
-        }
+        if (vec2_size > vec1_size)  vec_size = vec2_size;
 
-        double cosine_similarity = dotProduct(_v)/(Math.sqrt(dotProduct(this))*Math.sqrt(_v.dotProduct(_v)));
+        cosine_similarity = reSize(vec_size).dotProduct(_v.reSize(vec_size)) / (Math.sqrt(reSize(vec_size).dotProduct(reSize(vec_size))) * Math.sqrt(_v.reSize(vec_size).dotProduct(_v.reSize(vec_size))));
         return  cosine_similarity;
     }
 
@@ -140,6 +115,9 @@ public class Vector {
         Vector v = (Vector) _obj;
         boolean boolEquals = true;
         //TODO Task 1.11
+        if (doubElements.length != v.doubElements.length)   return false;
+        boolEquals = Arrays.equals(doubElements, v.doubElements);
+
         return boolEquals;
     }
 

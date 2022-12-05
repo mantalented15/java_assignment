@@ -1,6 +1,7 @@
 import org.apache.commons.lang3.time.StopWatch;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 //import java.util.Vector;
 
@@ -53,11 +54,6 @@ public class SemanticMain {
             String vocabulary = listVocabulary.get(i);
             if (!STOPWORDS.contains(vocabulary)) {
                 double[] elements = listVectors.get(i);
-                boolean f = true;
-                if (f) {
-                    for (double e : elements) System.out.println(e);
-                    f = false;
-                }
 
                 Vector vec = new Vector(elements);
                 Glove result = new Glove(vocabulary, vec);
@@ -70,29 +66,28 @@ public class SemanticMain {
     public List<CosSimilarityPair> WordsNearest(String _word) {
         List<CosSimilarityPair> listCosineSimilarity = new ArrayList<CosSimilarityPair>();
         //TODO Task 6.2
-//        double[] elements= {};
-        Vector vec_word = new Vector(new double[50]);
+        double[] elements= {};
+        Vector vec_word = new Vector(elements);
         boolean find_word = false;
 
         for (Glove g: listGlove)
-            if (g.getVocabulary() == _word) {
+            if (g.getVocabulary().equals(_word)) {
                 vec_word = g.getVector();
                 find_word = true;
-                System.out.println(g.getVocabulary());
                 break;
             }
 
         if (!find_word) {
             _word = "error";
             for (Glove g: listGlove)
-                if (g.getVocabulary() == _word) {
+                if (g.getVocabulary().equals(_word)) {
                     vec_word = g.getVector();
                     break;
                 }
         }
 
         for (Glove g: listGlove) {
-            if (g.getVocabulary() == _word) continue;
+            if (g.getVocabulary().equals(_word)) continue;
             double cos_similarity = g.getVector().cosineSimilarity(vec_word);
             CosSimilarityPair similarity_pair = new CosSimilarityPair(_word, g.getVocabulary(), cos_similarity);
             listCosineSimilarity.add(similarity_pair);
@@ -106,16 +101,14 @@ public class SemanticMain {
         List<CosSimilarityPair> listCosineSimilarity = new ArrayList<CosSimilarityPair>();
         //TODO Task 6.3
         for (Glove g: listGlove) {
-            if (g.getVector() == _vector)   continue;
+            if (g.getVector().equals(_vector))   continue;
             double cos_similarity = g.getVector().cosineSimilarity(_vector);
-//            double cos_similarity = _vector.cosineSimilarity(g.getVector());
 
             CosSimilarityPair similarity_pair = new CosSimilarityPair(_vector, g.getVocabulary(), cos_similarity);
             listCosineSimilarity.add(similarity_pair);
         }
 
         return HeapSort.doHeapSort(listCosineSimilarity);
-//        return listCosineSimilarity;
     }
 
     /**
@@ -142,14 +135,41 @@ public class SemanticMain {
         Vector vec_firISRef = new Vector(new double[50]);
         Vector vec_firTORef = new Vector(new double[50]);
 
+        // if one of _secISRef, _firISRef, _firTORef values is invalid or _top < 0, return empty list.
+        boolean flag_secISRef = false;
+        boolean flag_firISRef = false;
+        boolean flag_firTORef = false;
         for (Glove g: listGlove){
-            if (g.getVocabulary() == _secISRef) vec_secISRef = g.getVector();
-            if (g.getVocabulary() == _firISRef) vec_firISRef = g.getVector();
-            if (g.getVocabulary() == _firTORef) vec_firTORef = g.getVector();
+            if (g.getVocabulary().equals(_secISRef)){
+                vec_secISRef = g.getVector();
+                flag_secISRef = true;
+                continue;
+            }
+            if (g.getVocabulary().equals(_firISRef)){
+                vec_firISRef = g.getVector();
+                flag_firISRef = true;
+                continue;
+            }
+            if (g.getVocabulary().equals(_firTORef)){
+                vec_firTORef = g.getVector();
+                flag_firTORef = true;
+                continue;
+            }
         }
 
+        if (!(flag_secISRef && flag_firISRef && flag_firTORef) || (_top < 0)) return listResult;
+
+        // if valid,
         Vector vec_secTORef = vec_secISRef.subtraction(vec_firISRef).add(vec_firTORef);
-        listResult = WordsNearest(vec_secTORef).subList(0, _top);
-        return listResult;
+
+        listResult = WordsNearest(vec_secTORef);
+        Iterator<CosSimilarityPair> result_iterator = listResult.iterator();
+        while (result_iterator.hasNext()){
+            CosSimilarityPair result = result_iterator.next();
+            if (result.getWord2().equals(_secISRef) || result.getWord2().equals(_firISRef) || result.getWord2().equals(_firTORef)) {
+                result_iterator.remove();
+            }
+        }
+        return listResult.subList(0, _top);
     }
 }
